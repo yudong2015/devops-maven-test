@@ -37,6 +37,7 @@ pipeline {
         stage ('build & push') {
             steps {
                 container ('maven') {
+                    sh 'echo "### Test pull request ... "'
                     sh 'echo "### Run Maven ... "'
                     sh 'mvn clean package -DskipTests'
                     sh 'echo "### Build images ... "'
