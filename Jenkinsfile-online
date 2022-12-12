@@ -11,12 +11,12 @@ pipeline {
 
     environment {
         DOCKER_CREDENTIAL_ID = 'dockerhub-id'
-        GITHUB_CREDENTIAL_ID = 'github-id'
+        GITHUB_CREDENTIAL_ID = 'my-github'
         KUBECONFIG_CREDENTIAL_ID = 'demo-kubeconfig'
-        REGISTRY = 'docker.io'
-        DOCKERHUB_NAMESPACE = 'docker_username'
-        GITHUB_ACCOUNT = 'kubesphere'
-        APP_NAME = 'devops-java-sample'
+        REGISTRY = 'registry.cn-huhehaote.aliyuncs.com'
+        DOCKERHUB_NAMESPACE = 'jackyu-testing'
+        GITHUB_ACCOUNT = 'yudong2015'
+        APP_NAME = 'devops-maven-test'
     }
 
     stages {
@@ -37,12 +37,17 @@ pipeline {
         stage ('build & push') {
             steps {
                 container ('maven') {
+                    sh 'echo "### Run Maven ... "'
                     sh 'mvn clean package -DskipTests'
+                    sh 'echo "### Build images ... "'
                     sh 'docker build -f Dockerfile-online -t $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER .'
                     withCredentials([usernamePassword(passwordVariable : 'DOCKER_PASSWORD' ,usernameVariable : 'DOCKER_USERNAME' ,credentialsId : "$DOCKER_CREDENTIAL_ID" ,)]) {
+                        sh 'echo "### Login dockerhub ... "'
                         sh 'echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u "$DOCKER_USERNAME" --password-stdin'
+                        sh 'echo "### Push images ... "'
                         sh 'docker push  $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER'
                     }
+                sh 'echo "### Build & Push Done. "'
                 }
             }
         }
