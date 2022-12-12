@@ -37,12 +37,14 @@ pipeline {
         stage ('build & push') {
             steps {
                 container ('maven') {
-                    sh 'echo "### Build images ... "'
+                    sh 'echo "### Run Maven ... "'
                     sh 'mvn clean package -DskipTests'
+                    sh 'echo "### Build images ... "'
                     sh 'docker build -f Dockerfile-online -t $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER .'
                     withCredentials([usernamePassword(passwordVariable : 'DOCKER_PASSWORD' ,usernameVariable : 'DOCKER_USERNAME' ,credentialsId : "$DOCKER_CREDENTIAL_ID" ,)]) {
-                        sh 'echo "### Push images ... "'
+                        sh 'echo "### Login dockerhub ... "'
                         sh 'echo "$DOCKER_PASSWORD" | docker login $REGISTRY -u "$DOCKER_USERNAME" --password-stdin'
+                        sh 'echo "### Push images ... "'
                         sh 'docker push  $REGISTRY/$DOCKERHUB_NAMESPACE/$APP_NAME:SNAPSHOT-$BRANCH_NAME-$BUILD_NUMBER'
                     }
                 sh 'echo "### Build & Push Done. "'
