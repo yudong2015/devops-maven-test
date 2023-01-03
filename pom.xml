@@ -5,7 +5,7 @@
     <groupId>io.kubesphere.devops</groupId>
     <artifactId>devops-sample</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>devops-sample :: HelloWorld Demo</name>
+    <name>devops-sample :: HelloWorld Test</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
