@@ -20,12 +20,6 @@ pipeline {
     }
 
     stages {
-        stage ('checkout scm') {
-            steps {
-                checkout(scm)
-            }
-        }
-
         stage ('unit test') {
             steps {
                 container ('maven') {
@@ -37,6 +31,7 @@ pipeline {
         stage ('build & push') {
             steps {
                 container ('maven') {
+                    sh 'echo "### Test pull request ... "'
                     sh 'echo "### Run Maven ... "'
                     sh 'mvn clean package -DskipTests'
                     sh 'echo "### Build images ... "'
